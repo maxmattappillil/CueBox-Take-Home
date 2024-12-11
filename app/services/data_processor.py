@@ -16,9 +16,19 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
     output_constituents_df.to_csv('output_constituents.csv', index=False)
     output_tags_df.to_csv('output_tags.csv', index=False)
 
+from datetime import datetime
+
 def transform_constituents(constituents_df, donations_df, emails_df):
-    # Implement transformation logic for constituents
-    # Placeholder for actual logic
+    # Normalize the "Date Entered" column to YYYY-MM-DD format
+    def normalize_date(date_str):
+        for fmt in ("%b %d, %Y", "%m/%d/%Y", "%m/%d/%Y %H:%M:%S"):
+            try:
+                return datetime.strptime(date_str, fmt).strftime("%Y-%m-%d")
+            except ValueError:
+                continue
+        return ""
+
+    constituents_df['Date Entered'] = constituents_df['Date Entered'].apply(normalize_date)
     return constituents_df
 
 def transform_tags(constituents_df):
