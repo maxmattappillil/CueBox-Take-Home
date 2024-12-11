@@ -45,6 +45,8 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     # This will be replaced with actual transformation logic
     output_df["CB Constituent ID"] = constituents_df["Patron ID"]
     output_df["CB Created At"] = constituents_df["Date Entered"].apply(normalize_date)
+    output_df["CB First Name"] = constituents_df["First Name"]
+    output_df["CB Last Name"] = constituents_df["Last Name"]
 
     return output_df
 
