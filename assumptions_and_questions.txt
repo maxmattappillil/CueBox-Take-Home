@@ -25,3 +25,4 @@
 # Questions for Client Success Manager
 
 - Why are there empty rows with only a patron id and date entered?
+- How can a donation be recorded for Patron ID 1288 that occurred before the patron was entered into the system according to the constituents file?
