@@ -51,6 +51,12 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     output_df["CB First Name"] = constituents_df["First Name"].str.title()
     output_df["CB Last Name"] = constituents_df["Last Name"].str.title()
 
+    # Populate "CB Company Name"
+    output_df["CB Company Name"] = constituents_df.apply(
+        lambda row: row["Company Name"] if row["CB Constituent Type"] == "Company" and pd.notna(row["Company Name"]) else "Unknown",
+        axis=1
+    )
+
     return output_df
 
 def transform_tags(constituents_df):
