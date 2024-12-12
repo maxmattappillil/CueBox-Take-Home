@@ -17,7 +17,13 @@
     - The primary email is assumed to be "CB Email 1".
     - The email CSV may not be in order by patron ID with the primary email being the first item per group, so this is handled accordingly.
 
- - For determining donation-related columns:
+- For resolving duplicate Patron IDs:
+   * We identify duplicates in the constituents dataframe by checking for repeated Patron IDs.
+   * We resolve duplicates by matching primary emails from the emails dataframe.
+   * If a match is found, the duplicate with the matching primary email is retained.
+   * Unresolved duplicates are output to a CSV file for further inspection.
+
+- For determining CB Lifetime Donation Amount, Most Recent Donation Date, and Most Recent Donation
    * "CB Lifetime Donation Amount" is the total of all donations with a status of "Paid".
    * "CB Most Recent Donation Date" and "CB Most Recent Donation Amount" are based on the most recent donation with a status of "Paid".
    * Donations with a status of "Refunded" are not considered in these calculations.

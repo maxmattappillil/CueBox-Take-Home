@@ -1,5 +1,8 @@
 import pandas as pd
-from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags
+from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, \
+    format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags
+
+from app.utils.resolve_duplicates import resolve_duplicates
 
 def process_csv_files(constituents_file: str, donations_file: str, emails_file: str):
     # Read input CSV files
@@ -7,7 +10,9 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
     donations_df = pd.read_csv(donations_file)
     emails_df = pd.read_csv(emails_file)
 
-    # Process data to create the output CSVs
+    # Resolve duplicate patron IDs in constituents_df
+    constituents_df, duplicates_df = resolve_duplicates(constituents_df, emails_df)
+
     # Example: Transform data according to the requirements
     # This is a placeholder for the actual transformation logic
     output_constituents_df = transform_constituents(constituents_df, donations_df, emails_df)
@@ -17,7 +22,9 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
     output_constituents_df.to_csv('output_constituents.csv', index=False)
     output_tags_df.to_csv('output_tags.csv', index=False)
 
-from datetime import datetime
+    # Output unresolved duplicates to a CSV
+    if not duplicates_df.empty:
+        duplicates_df.to_csv('unresolved_duplicates.csv', index=False)
 
 def transform_constituents(constituents_df, donations_df, emails_df):
     # Fetch tag mappings once
