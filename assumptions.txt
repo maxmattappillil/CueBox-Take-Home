@@ -8,5 +8,4 @@
     - Title field is present
     - Gender is present and not "Unknown"
     - Tags contain "Student Scholar"
-  * Otherwise, the record is marked as "Company"
-- Further assumptions will be added as we progress with the implementation.
+  * Otherwise, the record is marked as "Company". Also if the row contains only the "Patron ID" and "Date Entered" fields, it is assumed to be a company
