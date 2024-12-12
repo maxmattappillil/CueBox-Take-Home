@@ -65,6 +65,9 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         *output_df.apply(extract_emails, axis=1, args=(email_groups, constituents_df))
     )
 
+    # Populate "CB Background Information"
+    output_df["CB Background Information"] = constituents_df.apply(format_background_info, axis=1)
+
     return output_df
 
 def transform_tags(constituents_df):

@@ -48,3 +48,12 @@ def extract_title(title: str) -> str:
              return title.split(" and ")[0]
          return title
      return ""
+
+def format_background_info(row: pd.Series) -> str:
+    """Format background information from job title and marital status."""
+    parts = []
+    if pd.notna(row["Title"]):
+        parts.append(f"Job Title: {row['Title']}")
+    if row["Gender"] in ["Married", "Single"]:
+        parts.append(f"Marital Status: {row['Gender']}")
+    return "; ".join(parts)
