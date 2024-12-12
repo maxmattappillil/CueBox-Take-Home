@@ -53,7 +53,7 @@ def transform_constituents(constituents_df, donations_df, emails_df):
 
     # Populate "CB Company Name"
     output_df["CB Company Name"] = constituents_df.apply(
-        lambda row: row["Company Name"] if row["CB Constituent Type"] == "Company" and pd.notna(row["Company Name"]) else "Unknown",
+        lambda row: row["Company Name"] if row["CB Constituent Type"] == "Company" and pd.notna(row["Company Name"]) else "N/A",
         axis=1
     )
 
