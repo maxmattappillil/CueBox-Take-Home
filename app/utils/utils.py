@@ -7,7 +7,7 @@ def normalize_date(date_str: str) -> str:
     if not date_str or pd.isna(date_str):
         return ""
 
-    for fmt in ("%b %d, %Y", "%m/%d/%Y", "%m/%d/%Y %H:%M:%S"):
+    for fmt in ("%b %d, %Y", "%m/%d/%Y", "%m/%d/%Y %H:%M:%S", "%m/%d/%Y %H:%M"):
         try:
             date_obj = datetime.strptime(date_str, fmt)
             # If the time is not provided, default to "00:00:00"
