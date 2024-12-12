@@ -9,3 +9,7 @@
     - Gender is present and not "Unknown"
     - Tags contain "Student Scholar"
   * Otherwise, the record is marked as "Company". Also if the row contains only the "Patron ID" and "Date Entered" fields, it is assumed to be a company
+
+# Questions for Client Success Manager
+
+- Why are there empty rows with only a patron id and date entered?
