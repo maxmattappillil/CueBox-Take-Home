@@ -57,6 +57,21 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         axis=1
     )
 
+    # Standardize and populate emails
+    email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
+
+    def get_emails(patron_id):
+        emails = email_groups.get(patron_id, [])
+        if len(emails) > 0:
+            email_1 = emails[0]
+            email_2 = emails[1] if len(emails) > 1 and emails[1] != email_1 else ""
+            return email_1, email_2
+        return "", ""
+
+    output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
+        *output_df["CB Constituent ID"].map(get_emails)
+    )
+
     return output_df
 
 def transform_tags(constituents_df):
