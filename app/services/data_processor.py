@@ -58,12 +58,16 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         axis=1
     )
 
-    # Standardize and populate emails
+    def extract_emails(row):
+        """Helper function to extract emails for a given row."""
+        patron_id = row["CB Constituent ID"]
+        primary_email = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Primary Email"].values[0]
+        return get_emails(email_groups, patron_id, primary_email)
     email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
 
 
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
-        *output_df.apply(lambda row: get_emails(email_groups, row["CB Constituent ID"], constituents_df.loc[constituents_df["Patron ID"] == row["CB Constituent ID"], "Primary Email"].values[0]), axis=1)
+        *output_df.apply(extract_emails, axis=1)
     )
 
     return output_df
