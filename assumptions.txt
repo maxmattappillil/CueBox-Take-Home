@@ -1,1 +1,0 @@
-- If the constituent type is determined to be a company and there is no value for the company name, it is marked as "Unknown".
