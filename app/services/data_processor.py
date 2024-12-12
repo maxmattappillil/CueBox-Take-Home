@@ -60,16 +60,23 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     # Standardize and populate emails
     email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
 
-    def get_emails(patron_id):
+    def get_emails(patron_id, primary_email):
         emails = email_groups.get(patron_id, [])
-        if len(emails) > 0:
-            email_1 = emails[0]
-            email_2 = emails[1] if len(emails) > 1 and emails[1] != email_1 else ""
-            return email_1, email_2
-        return "", ""
+        email_1 = primary_email
+        email_2 = ""
+
+        # Ensure email_1 is the primary email
+        if primary_email in emails:
+            emails.remove(primary_email)
+
+        # Assign the next available email as email_2
+        if emails:
+            email_2 = emails[0]
+
+        return email_1, email_2
 
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
-        *output_df["CB Constituent ID"].map(get_emails)
+        *output_df.apply(lambda row: get_emails(row["CB Constituent ID"], row["Primary Email"]), axis=1)
     )
 
     return output_df
