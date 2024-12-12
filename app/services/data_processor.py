@@ -65,13 +65,10 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         email_1 = primary_email
         email_2 = ""
 
-        # Ensure email_1 is the primary email
-        if primary_email in emails:
-            emails.remove(primary_email)
-
-        # Assign the next available email as email_2
-        if emails:
-            email_2 = emails[0]
+        # Check if there is more than one email available
+        if len(emails) > 1:
+            # Assign the next available email as email_2
+            email_2 = emails[0] if emails[0] != email_1 else emails[1]
 
         return email_1, email_2
 
