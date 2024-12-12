@@ -8,7 +8,10 @@
     - Title field is present
     - Gender is present and not "Unknown"
     - Tags contain "Student Scholar"
-  * Otherwise, the record is marked as "Company". Also if the row contains only the "Patron ID" and "Date Entered" fields, it is assumed to be a company
+  * Otherwise, the record is marked as "Company". Also if the row contains only the "Patron ID" and "Date Entered" fields, it is assumed to be a company.
+
+- For determining "CB Title":
+  * If the "Title" column contains multiple titles separated by "and", the first title is selected.
 
 - For determining "CB Email 1 and 2":
     - The primary email is assumed to be "CB Email 1".
