@@ -1,7 +1,5 @@
 import pandas as pd
-from app.utils.date_normalizer import normalize_date
-from app.utils.find_emails import get_emails
-from app.utils.constituent_type_finder import determine_constituent_type
+from app.utils.utils import normalize_date, determine_constituent_type, extract_emails
 
 def process_csv_files(constituents_file: str, donations_file: str, emails_file: str):
     # Read input CSV files
@@ -58,16 +56,10 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         axis=1
     )
 
-    def extract_emails(row):
-        """Helper function to extract emails for a given row."""
-        patron_id = row["CB Constituent ID"]
-        primary_email = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Primary Email"].values[0]
-        return get_emails(email_groups, patron_id, primary_email)
+    # Populate CB Email 1 and CB Email 2
     email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
-
-
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
-        *output_df.apply(extract_emails, axis=1)
+        *output_df.apply(extract_emails, axis=1, args=(email_groups, constituents_df))
     )
 
     return output_df
