@@ -49,11 +49,20 @@ def extract_title(title: str) -> str:
          return title
      return ""
 
-def format_background_info(row: pd.Series) -> str:
-    """Format background information from job title and marital status."""
-    parts = []
-    if pd.notna(row["Title"]):
-        parts.append(f"Job Title: {row['Title']}")
-    if row["Gender"] in ["Married", "Single"]:
-        parts.append(f"Marital Status: {row['Gender']}")
-    return "; ".join(parts)
+def calculate_donation_info(donations_df: pd.DataFrame) -> dict:
+    """Calculate donation-related information for all patrons."""
+    donation_info = {}
+    paid_donations = donations_df[donations_df["Status"] == "Paid"]
+
+    for patron_id, group in paid_donations.groupby("Patron ID"):
+        lifetime_donation = group["Donation Amount"].sum()
+        most_recent_date, most_recent_amount = group.loc[group["Donation Date"].idxmax(), ["Donation Date", "Donation Amount"]]
+        most_recent_date = pd.to_datetime(most_recent_date).strftime("%Y-%m-%d 00:00:00")
+
+        donation_info[patron_id] = (
+            f"${lifetime_donation:.2f}" if lifetime_donation else "",
+            most_recent_date,
+            f"${most_recent_amount:.2f}" if most_recent_amount else ""
+        )
+
+    return donation_info

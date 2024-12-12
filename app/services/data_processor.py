@@ -1,5 +1,5 @@
 import pandas as pd
-from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title
+from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, format_background_info, calculate_donation_info
 
 def process_csv_files(constituents_file: str, donations_file: str, emails_file: str):
     # Read input CSV files
@@ -67,6 +67,13 @@ def transform_constituents(constituents_df, donations_df, emails_df):
 
     # Populate "CB Background Information"
     output_df["CB Background Information"] = constituents_df.apply(format_background_info, axis=1)
+
+    # Calculate donation-related columns
+    donation_info = calculate_donation_info(donations_df)
+    output_df[["CB Lifetime Donation Amount", "CB Most Recent Donation Date", "CB Most Recent Donation Amount"]] = \
+    output_df["CB Constituent ID"].apply(
+        lambda patron_id: donation_info.get(patron_id, ("", "", ""))
+    ).apply(pd.Series)
 
     return output_df
 
