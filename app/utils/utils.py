@@ -40,3 +40,11 @@ def determine_constituent_type(row: pd.Series) -> str:
     if "Student Scholar" in str(row["Tags"]):
         return "Person"
     return "Company"
+
+def extract_title(title: str) -> str:
+     """Extract the first title from a string, handling multiple titles separated by 'and'."""
+     if isinstance(title, str):
+         if "and" in title:
+             return title.split(" and ")[0]
+         return title
+     return ""
