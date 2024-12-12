@@ -1,6 +1,6 @@
 import pandas as pd
 
-def resolve_duplicates(constituents_df: pd.DataFrame, emails_df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+def resolve_duplicate_patron_ids(constituents_df: pd.DataFrame, emails_df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     """Resolve duplicate Patron IDs in constituents_df using primary email matching."""
     duplicates = constituents_df[constituents_df.duplicated(subset='Patron ID', keep=False)]
     duplicates['Resolved'] = False
