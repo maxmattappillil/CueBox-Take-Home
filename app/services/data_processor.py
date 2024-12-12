@@ -1,5 +1,6 @@
 import pandas as pd
 from app.utils.date_normalizer import normalize_date
+from app.utils.constituent_type_finder import determine_constituent_type
 
 def process_csv_files(constituents_file: str, donations_file: str, emails_file: str):
     # Read input CSV files
@@ -42,17 +43,6 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     ])
 
     # Determine "CB Constituent Type"
-    def determine_constituent_type(row):
-        if pd.notna(row["First Name"]) and pd.notna(row["Last Name"]):
-            return "Person"
-        if pd.notna(row["Title"]):
-            return "Person"
-        if row["Gender"] != "Unknown" and pd.notna(row["Gender"]):
-            return "Person"
-        if "Student Scholar" in str(row["Tags"]):
-            return "Person"
-        return "Company"
-
     output_df["CB Constituent Type"] = constituents_df.apply(determine_constituent_type, axis=1)
 
     # Populate other columns
