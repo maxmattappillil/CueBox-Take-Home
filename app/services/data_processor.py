@@ -1,5 +1,6 @@
 import pandas as pd
 from app.utils.date_normalizer import normalize_date
+from app.utils.find_emails import get_emails
 from app.utils.constituent_type_finder import determine_constituent_type
 
 def process_csv_files(constituents_file: str, donations_file: str, emails_file: str):
@@ -60,17 +61,6 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     # Standardize and populate emails
     email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
 
-    def get_emails(patron_id, primary_email):
-        emails = email_groups.get(patron_id, [])
-        email_1 = primary_email
-        email_2 = ""
-
-        # Check if there is more than one email available
-        if len(emails) > 1:
-            # Assign the next available email as email_2
-            email_2 = emails[0] if emails[0] != email_1 else emails[1]
-
-        return email_1, email_2
 
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
         *output_df.apply(lambda row: get_emails(row["CB Constituent ID"], row["Primary Email"]), axis=1)
