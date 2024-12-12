@@ -2,4 +2,11 @@
 
 - The "CB Constituent ID" is directly mapped from the "Patron ID" in the input data.
 - The "CB Created At" is directly mapped to the "Date Entered" field. If a timestamp was not present in this column for a row of data, the default time is 00:00:00
+- For determining "CB Constituent Type":
+  * A record is marked as "Person" if any of these conditions are met:
+    - Both First Name and Last Name are present
+    - Title field is present
+    - Gender is present and not "Unknown"
+    - Tags contain "Student Scholar"
+  * Otherwise, the record is marked as "Company"
 - Further assumptions will be added as we progress with the implementation.

@@ -21,8 +21,8 @@ from datetime import datetime
 
 def transform_constituents(constituents_df, donations_df, emails_df):
     # Normalize the "Date Entered" column to YYYY-MM-DD format
-
     constituents_df['Date Entered'] = constituents_df['Date Entered'].apply(normalize_date)
+
     # Initialize the output DataFrame with the required columns
     output_df = pd.DataFrame(columns=[
         "CB Constituent ID",
@@ -41,8 +41,21 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         "CB Most Recent Donation Amount"
     ])
 
-    # Placeholder logic to populate the DataFrame
-    # This will be replaced with actual transformation logic
+    # Determine "CB Constituent Type"
+    def determine_constituent_type(row):
+        if pd.notna(row["First Name"]) and pd.notna(row["Last Name"]):
+            return "Person"
+        if pd.notna(row["Title"]):
+            return "Person"
+        if row["Gender"] != "Unknown" and pd.notna(row["Gender"]):
+            return "Person"
+        if "Student Scholar" in str(row["Tags"]):
+            return "Person"
+        return "Company"
+
+    output_df["CB Constituent Type"] = constituents_df.apply(determine_constituent_type, axis=1)
+
+    # Populate other columns
     output_df["CB Constituent ID"] = constituents_df["Patron ID"]
     output_df["CB Created At"] = constituents_df["Date Entered"].apply(normalize_date)
     output_df["CB First Name"] = constituents_df["First Name"].str.title()
