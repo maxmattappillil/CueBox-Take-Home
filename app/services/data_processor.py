@@ -63,7 +63,7 @@ def transform_constituents(constituents_df, donations_df, emails_df):
 
 
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
-        *output_df.apply(lambda row: get_emails(row["CB Constituent ID"], row["Primary Email"]), axis=1)
+        *output_df.apply(lambda row: get_emails(email_groups, row["CB Constituent ID"], constituents_df.loc[constituents_df["Patron ID"] == row["CB Constituent ID"], "Primary Email"].values[0]), axis=1)
     )
 
     return output_df
