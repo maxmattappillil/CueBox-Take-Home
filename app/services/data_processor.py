@@ -58,7 +58,7 @@ def transform_constituents(constituents_df, donations_df, emails_df):
 
     # Populate "CB Title"
     output_df["CB Title"] = constituents_df["Title"].apply(
-        lambda title: title.split(" and ")[0] if pd.notna(title) else ""
+        lambda title: title.split(" and ")[0] if isinstance(title, str) and "and" in title else (title if pd.notna(title) else "")
     )
     email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
