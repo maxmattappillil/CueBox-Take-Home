@@ -68,6 +68,15 @@ def calculate_donation_info(donations_df: pd.DataFrame) -> dict:
 
     return donation_info
 
+def format_background_info(row: pd.Series) -> str:
+    """Format background information from job title and marital status."""
+    parts = []
+    if pd.notna(row["Title"]):
+        parts.append(f"Job Title: {row['Title']}")
+    if row["Gender"] in ["Married", "Single"]:
+        parts.append(f"Marital Status: {row['Gender']}")
+    return "; ".join(parts)
+
 def fetch_tag_mappings() -> dict:
     """Fetch tag mappings from the API and return as a dictionary."""
     response = requests.get("https://6719768f7fc4c5ff8f4d84f1.mockapi.io/api/v1/tags")
