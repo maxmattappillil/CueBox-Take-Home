@@ -1,5 +1,6 @@
 from datetime import datetime
 import pandas as pd
+import requests
 
 def normalize_date(date_str: str) -> str:
     """Normalize date strings to YYYY-MM-DD HH:MM:SS format."""
@@ -66,3 +67,18 @@ def calculate_donation_info(donations_df: pd.DataFrame) -> dict:
         )
 
     return donation_info
+
+def fetch_tag_mappings() -> dict:
+    """Fetch tag mappings from the API and return as a dictionary."""
+    response = requests.get("https://6719768f7fc4c5ff8f4d84f1.mockapi.io/api/v1/tags")
+    response.raise_for_status()
+    tag_data = response.json()
+    return {tag['name']: tag['mapped_name'] for tag in tag_data}
+
+def map_tags(tags: str, tag_mappings: dict) -> str:
+    """Map original tags to desired values using the provided mappings."""
+    if not tags or pd.isna(tags):
+        return ""
+    original_tags = tags.split(',')
+    mapped_tags = [tag_mappings.get(tag.strip(), tag.strip()) for tag in original_tags]
+    return ', '.join(mapped_tags)

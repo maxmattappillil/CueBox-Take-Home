@@ -1,5 +1,5 @@
 import pandas as pd
-from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, format_background_info, calculate_donation_info
+from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags
 
 def process_csv_files(constituents_file: str, donations_file: str, emails_file: str):
     # Read input CSV files
@@ -20,6 +20,9 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
 from datetime import datetime
 
 def transform_constituents(constituents_df, donations_df, emails_df):
+    # Fetch tag mappings once
+    tag_mappings = fetch_tag_mappings()
+
     # Normalize the "Date Entered" column to YYYY-MM-DD format
     constituents_df['Date Entered'] = constituents_df['Date Entered'].apply(normalize_date)
 
@@ -67,6 +70,9 @@ def transform_constituents(constituents_df, donations_df, emails_df):
 
     # Populate "CB Background Information"
     output_df["CB Background Information"] = constituents_df.apply(format_background_info, axis=1)
+
+    # Populate "CB Tags"
+    output_df["CB Tags"] = constituents_df["Tags"].apply(map_tags, args=(tag_mappings,))
 
     # Calculate donation-related columns
     donation_info = calculate_donation_info(donations_df)
