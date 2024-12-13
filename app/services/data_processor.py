@@ -1,6 +1,6 @@
 import pandas as pd
 from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, \
-    format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags
+    format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags, get_company_name
 
 from app.utils.resolve_duplicates import resolve_duplicate_patron_ids
 
@@ -16,11 +16,11 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
     # Example: Transform data according to the requirements
     # This is a placeholder for the actual transformation logic
     output_constituents_df = transform_constituents(constituents_df, donations_df, emails_df)
-    output_tags_df = transform_tags(constituents_df)
+    # output_tags_df = transform_tags(constituents_df)
 
     # Write the output CSV files
     output_constituents_df.to_csv('output_constituents.csv', index=False)
-    output_tags_df.to_csv('output_tags.csv', index=False)
+    # output_tags_df.to_csv('output_tags.csv', index=False)
 
     # Output unresolved duplicates to a CSV
     if not duplicates_df.empty:
@@ -30,8 +30,8 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     # Fetch tag mappings once
     tag_mappings = fetch_tag_mappings()
 
-    # Normalize the "Date Entered" column to YYYY-MM-DD format
-    constituents_df['Date Entered'] = constituents_df['Date Entered'].apply(normalize_date)
+    # # Normalize the "Date Entered" column to YYYY-MM-DD format
+    # constituents_df['Date Entered'] = constituents_df['Date Entered'].apply(normalize_date)
 
     # Initialize the output DataFrame with the required columns
     output_df = pd.DataFrame(columns=[
@@ -61,10 +61,8 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     output_df["CB Last Name"] = constituents_df["Last Name"].str.title()
 
     # Populate "CB Company Name"
-    output_df["CB Company Name"] = constituents_df.apply(
-        lambda row: row["Company Name"] if row["CB Constituent Type"] == "Company" and pd.notna(row["Company Name"]) else "N/A",
-        axis=1
-    )
+    output_df["CB Company Name"] = output_df.apply(
+        lambda row: get_company_name(row["CB Constituent ID"], row["CB Constituent Type"], constituents_df), axis=1)
 
     # Populate "CB Title"
     output_df["CB Title"] = constituents_df["Title"].apply(extract_title)

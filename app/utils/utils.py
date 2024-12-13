@@ -91,3 +91,13 @@ def map_tags(tags: str, tag_mappings: dict) -> str:
     original_tags = tags.split(',')
     mapped_tags = [tag_mappings.get(tag.strip(), tag.strip()) for tag in original_tags]
     return ', '.join(mapped_tags)
+
+
+def get_company_name(patron_id: str, constituent_type: str, constituents_df: pd.DataFrame) -> str:
+    """Get the company name for a given patron ID if the constituent type is 'Company'."""
+    if constituent_type == "Company":
+        company_name = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Company"].values[0]
+        if pd.notna(company_name):
+            return company_name
+    return "N/A"
+
