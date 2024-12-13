@@ -1,4 +1,6 @@
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from app.services.data_processor import process_csv_files
 
 router = APIRouter()
@@ -26,10 +28,8 @@ async def upload_files(
 
     return {"message": "Files processed successfully"}
 
-@router.get("/")
-async def root():
-    return {"message": "Welcome to the CSV Processing Service"}
+templates = Jinja2Templates(directory="app/templates")
 
-@router.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+@router.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
