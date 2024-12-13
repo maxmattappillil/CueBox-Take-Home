@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <h1>Upload CSV Files</h1>
-        <form action="/upload/" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="constituents">Constituents CSV:</label>
                 <input type="file" id="constituents" name="constituents" accept=".csv" required>
@@ -22,8 +22,43 @@
                 <label for="emails">Emails CSV:</label>
                 <input type="file" id="emails" name="emails" accept=".csv" required>
             </div>
-            <button type="submit">Upload</button>
+            <button type="button" onclick="uploadFiles()">Upload</button>
         </form>
     </div>
+    <script>
+        async function uploadFiles() {
+            const form = document.getElementById('uploadForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/upload/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    downloadFile(data.constituents_csv_url, 'output_constituents.csv');
+                    downloadFile(data.tags_csv_url, 'output_tags.csv');
+                    if (data.duplicates_csv_url) {
+                        downloadFile(data.duplicates_csv_url, 'unresolved_duplicates.csv');
+                    }
+                } else {
+                    console.error('Failed to upload files');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function downloadFile(url, filename) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
 </body>
 </html>

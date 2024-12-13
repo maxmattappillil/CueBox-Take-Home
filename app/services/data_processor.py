@@ -17,13 +17,7 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
     output_constituents_df = transform_constituents(constituents_df, donations_df, emails_df)
     output_tags_df = transform_tags(output_constituents_df["CB Tags"])
 
-    # Write the output CSV files
-    output_constituents_df.to_csv('output_constituents.csv', index=False)
-    output_tags_df.to_csv('output_tags.csv', index=False)
-
-    # Save unresolved duplicates to a CSV
-    if not duplicates_df.empty:
-        duplicates_df.to_csv('unresolved_duplicates.csv', index=False)
+    return output_constituents_df, output_tags_df, duplicates_df
 
 def transform_constituents(constituents_df, donations_df, emails_df):
     # Fetch tag mappings once
