@@ -53,6 +53,7 @@ def extract_title(title: str) -> str:
 def calculate_donation_info(donations_df: pd.DataFrame) -> dict:
     """Calculate donation-related information for all patrons."""
     donation_info = {}
+    donations_df["Donation Amount"] = donations_df["Donation Amount"].str.replace("$", "").str.replace(",", "").astype(float)
     paid_donations = donations_df[donations_df["Status"] == "Paid"]
 
     for patron_id, group in paid_donations.groupby("Patron ID"):
