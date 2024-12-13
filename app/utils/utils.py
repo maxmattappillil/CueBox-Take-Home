@@ -96,7 +96,7 @@ def map_tags(tags: str, tag_mappings: dict) -> str:
 def get_company_name(patron_id: str, constituent_type: str, constituents_df: pd.DataFrame) -> str:
     """Get the company name for a given patron ID if the constituent type is 'Company'."""
     if constituent_type == "Company":
-        company_name = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Company"].values[0]
+        company_name = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Company"].fillna("").values[0]
         if pd.notna(company_name):
             return company_name
     return "N/A"

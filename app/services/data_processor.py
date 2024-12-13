@@ -57,8 +57,8 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     # Populate other columns
     output_df["CB Constituent ID"] = constituents_df["Patron ID"]
     output_df["CB Created At"] = constituents_df["Date Entered"].apply(normalize_date)
-    output_df["CB First Name"] = constituents_df["First Name"].str.title()
-    output_df["CB Last Name"] = constituents_df["Last Name"].str.title()
+    output_df["CB First Name"] = constituents_df["First Name"].str.title().fillna("")
+    output_df["CB Last Name"] = constituents_df["Last Name"].str.title().fillna("")
 
     # Populate "CB Company Name"
     output_df["CB Company Name"] = output_df.apply(
