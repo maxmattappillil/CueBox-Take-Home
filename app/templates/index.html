@@ -15,7 +15,8 @@
         <div class="curtain">
             <div class="container">
                 <h1>Constituent & Donation Insights</h1>
-                <p class="subtitle">Upload your data to get a comprehensive view of your donors and their giving history</p>
+                <p class="subtitle">Upload your data to get a comprehensive view of your donors and their giving history
+                </p>
 
                 <form id="uploadForm" enctype="multipart/form-data">
                     <div class="file-upload-container">
@@ -87,6 +88,16 @@
     <script>
         async function uploadFiles() {
             const form = document.getElementById('uploadForm');
+            const constituentsFile = document.getElementById('constituents').files[0];
+            const donationsFile = document.getElementById('donations').files[0];
+            const emailsFile = document.getElementById('emails').files[0];
+
+            // Check if all files are present
+            if (!constituentsFile || !donationsFile || !emailsFile) {
+                alert('Please provide all three files before proceeding.');
+                return;
+            }
+
             const formData = new FormData(form);
             const uploadButton = document.querySelector('.upload-button');
             const loadingNotification = document.getElementById('loadingNotification');
