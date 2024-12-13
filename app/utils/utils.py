@@ -91,7 +91,7 @@ def map_tags(tags: str, tag_mappings: dict) -> str:
         return ""
     original_tags = tags.split(',')
     mapped_tags = [tag_mappings.get(tag.strip(), tag.strip()) for tag in original_tags]
-    return ', '.join(mapped_tags)
+    return ', '.join(set(mapped_tags))
 
 
 def get_company_name(patron_id: str, constituent_type: str, constituents_df: pd.DataFrame) -> str:

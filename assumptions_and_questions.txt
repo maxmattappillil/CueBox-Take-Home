@@ -28,6 +28,8 @@
    * "CB Most Recent Donation Date" and "CB Most Recent Donation Amount" are based on the most recent donation with a status of "Paid".
    * Donations with a status of "Refunded" are not considered in these calculations.
 
+- For mapping tags, only unique mapped tag values are returned to avoid duplicates.
+
 # Questions for Client Success Manager
 
 - Why are there empty rows with only a patron id and date entered?

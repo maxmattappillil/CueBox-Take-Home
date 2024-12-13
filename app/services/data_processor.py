@@ -15,11 +15,11 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
 
     # Transform data according to the requirements
     output_constituents_df = transform_constituents(constituents_df, donations_df, emails_df)
-    # Transform tags (currently commented out)
+    output_tags_df = transform_tags(output_constituents_df["CB Tags"])
 
     # Write the output CSV files
     output_constituents_df.to_csv('output_constituents.csv', index=False)
-    # output_tags_df.to_csv('output_tags.csv', index=False)
+    output_tags_df.to_csv('output_tags.csv', index=False)
 
     # Save unresolved duplicates to a CSV
     if not duplicates_df.empty:
@@ -81,7 +81,10 @@ def transform_constituents(constituents_df, donations_df, emails_df):
 
     return output_df
 
-def transform_tags(constituents_df):
-    # Implement transformation logic for tags
-    # Placeholder for actual logic
-    return constituents_df[['Tags']].drop_duplicates()
+def transform_tags(tags_column):
+    """Transform tags to count occurrences and prepare for output."""
+    tags_series = tags_column.str.split(',').explode().str.strip().dropna()
+    tags_series = tags_series[tags_series != ""]
+    tag_counts = tags_series.value_counts().reset_index()
+    tag_counts.columns = ["CB Tag Name", "CB Tag Count"]
+    return tag_counts
