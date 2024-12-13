@@ -13,25 +13,21 @@ def process_csv_files(constituents_file: str, donations_file: str, emails_file: 
     # Resolve duplicate patron IDs in constituents_df
     constituents_df, duplicates_df = resolve_duplicate_patron_ids(constituents_df, emails_df)
 
-    # Example: Transform data according to the requirements
-    # This is a placeholder for the actual transformation logic
+    # Transform data according to the requirements
     output_constituents_df = transform_constituents(constituents_df, donations_df, emails_df)
-    # output_tags_df = transform_tags(constituents_df)
+    # Transform tags (currently commented out)
 
     # Write the output CSV files
     output_constituents_df.to_csv('output_constituents.csv', index=False)
     # output_tags_df.to_csv('output_tags.csv', index=False)
 
-    # Output unresolved duplicates to a CSV
+    # Save unresolved duplicates to a CSV
     if not duplicates_df.empty:
         duplicates_df.to_csv('unresolved_duplicates.csv', index=False)
 
 def transform_constituents(constituents_df, donations_df, emails_df):
     # Fetch tag mappings once
     tag_mappings = fetch_tag_mappings()
-
-    # # Normalize the "Date Entered" column to YYYY-MM-DD format
-    # constituents_df['Date Entered'] = constituents_df['Date Entered'].apply(normalize_date)
 
     # Initialize the output DataFrame with the required columns
     output_df = pd.DataFrame(columns=[
@@ -51,7 +47,7 @@ def transform_constituents(constituents_df, donations_df, emails_df):
         "CB Most Recent Donation Amount"
     ])
 
-    # Determine "CB Constituent Type"
+    # Determine constituent type
     output_df["CB Constituent Type"] = constituents_df.apply(determine_constituent_type, axis=1)
 
     # Populate other columns
@@ -61,22 +57,22 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     output_df["CB Last Name"] = constituents_df["Last Name"].str.title().fillna("")
     output_df["CB Company Name"] = constituents_df["Company"].fillna("")
 
-    # Populate "CB Title"
+    # Extract and populate title
     output_df["CB Title"] = constituents_df["Title"].apply(extract_title)
 
-    # Populate "CB Email 1 and CB Email 2"
+    # Extract and populate emails
     email_groups = emails_df.groupby("Patron ID")["Email"].apply(list).to_dict()
     output_df["CB Email 1 (Standardized)"], output_df["CB Email 2 (Standardized)"] = zip(
         *output_df.apply(extract_emails, axis=1, args=(email_groups, constituents_df))
     )
 
-    # Populate "CB Background Information"
+    # Format and populate background information
     output_df["CB Background Information"] = constituents_df.apply(format_background_info, axis=1)
 
-    # Populate "CB Tags"
+    # Map and populate tags
     output_df["CB Tags"] = constituents_df["Tags"].apply(map_tags, args=(tag_mappings,))
 
-    # Calculate donation-related columns
+    # Calculate and populate donation-related columns
     donation_info = calculate_donation_info(donations_df)
     output_df[["CB Lifetime Donation Amount", "CB Most Recent Donation Date", "CB Most Recent Donation Amount"]] = \
     output_df["CB Constituent ID"].apply(
