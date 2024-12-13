@@ -1,6 +1,6 @@
 import pandas as pd
 from app.utils.utils import normalize_date, determine_constituent_type, extract_emails, extract_title, \
-    format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags, get_company_name
+    format_background_info, calculate_donation_info, fetch_tag_mappings, map_tags
 
 from app.utils.resolve_duplicates import resolve_duplicate_patron_ids
 
@@ -59,10 +59,7 @@ def transform_constituents(constituents_df, donations_df, emails_df):
     output_df["CB Created At"] = constituents_df["Date Entered"].apply(normalize_date)
     output_df["CB First Name"] = constituents_df["First Name"].str.title().fillna("")
     output_df["CB Last Name"] = constituents_df["Last Name"].str.title().fillna("")
-
-    # Populate "CB Company Name"
-    output_df["CB Company Name"] = output_df.apply(
-        lambda row: get_company_name(row["CB Constituent ID"], row["CB Constituent Type"], constituents_df), axis=1)
+    output_df["CB Company Name"] = constituents_df["Company"].fillna("")
 
     # Populate "CB Title"
     output_df["CB Title"] = constituents_df["Title"].apply(extract_title)

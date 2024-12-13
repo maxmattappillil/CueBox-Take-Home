@@ -27,7 +27,7 @@ def get_emails(email_groups, patron_id, primary_email):
 def extract_emails(row, email_groups, constituents_df):
     """Helper function to extract emails for a given row."""
     patron_id = row["CB Constituent ID"]
-    primary_email = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Primary Email"].values[0]
+    primary_email = constituents_df.loc[constituents_df["Patron ID"] == patron_id, "Primary Email"].fillna("").values[0]
     return get_emails(email_groups, patron_id, primary_email)
 
 def determine_constituent_type(row: pd.Series) -> str:
