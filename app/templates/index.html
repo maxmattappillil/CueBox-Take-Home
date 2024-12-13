@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Theater Data Platform</title>
     <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap">
 </head>
+
 <body>
     <div class="stage">
         <div class="curtain">
             <div class="container">
                 <h1>Transform Your Theater Data</h1>
                 <p class="subtitle">Seamlessly upload your data and let us set the stage for success</p>
-                
+
                 <form id="uploadForm" enctype="multipart/form-data">
                     <div class="file-upload-container">
                         <div class="form-group">
@@ -21,36 +24,37 @@
                                 <span class="label-text">Constituents CSV</span>
                             </label>
                             <div class="file-input-wrapper">
-                                <input type="file" id="constituents" name="constituents" accept=".csv" required 
-                                       onchange="updateFileName(this)">
-                                <span class="file-input-button" onclick="document.getElementById('constituents').click()">
+                                <input type="file" id="constituents" name="constituents" accept=".csv" required
+                                    onchange="updateFileName(this)">
+                                <span class="file-input-button"
+                                    onclick="document.getElementById('constituents').click()">
                                     <span class="button-text">Choose File</span>
                                     <span class="file-name"></span>
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="donations">
                                 <span class="label-text">Donations CSV</span>
                             </label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="donations" name="donations" accept=".csv" required
-                                       onchange="updateFileName(this)">
+                                    onchange="updateFileName(this)">
                                 <span class="file-input-button" onclick="document.getElementById('donations').click()">
                                     <span class="button-text">Choose File</span>
                                     <span class="file-name"></span>
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <label for="emails">
                                 <span class="label-text">Emails CSV</span>
                             </label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="emails" name="emails" accept=".csv" required
-                                       onchange="updateFileName(this)">
+                                    onchange="updateFileName(this)">
                                 <span class="file-input-button" onclick="document.getElementById('emails').click()">
                                     <span class="button-text">Choose File</span>
                                     <span class="file-name"></span>
@@ -58,12 +62,25 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <button type="button" onclick="uploadFiles()" class="upload-button">
                         Transform Data
                         <span class="button-shine"></span>
                     </button>
                 </form>
+                <div class="notification-container">
+                    <div id="loadingNotification" class="notification loading">
+                        <div class="spinner"></div>
+                        <span>Transforming your data...</span>
+                    </div>
+                    <div id="successNotification" class="notification success">
+                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                        </svg>
+                        <span>Files have been processed and downloaded!</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -71,6 +88,13 @@
         async function uploadFiles() {
             const form = document.getElementById('uploadForm');
             const formData = new FormData(form);
+            const uploadButton = document.querySelector('.upload-button');
+            const loadingNotification = document.getElementById('loadingNotification');
+            const successNotification = document.getElementById('successNotification');
+
+            // Disable the upload button and show loading notification
+            uploadButton.disabled = true;
+            loadingNotification.classList.add('show');
 
             try {
                 const response = await fetch('/upload/', {
@@ -80,26 +104,48 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    downloadFile(data.constituents_csv_url, 'output_constituents.csv');
-                    downloadFile(data.tags_csv_url, 'output_tags.csv');
+
+                    // Download all files
+                    await downloadFile(data.constituents_csv_url, 'output_constituents.csv');
+                    await downloadFile(data.tags_csv_url, 'output_tags.csv');
                     if (data.duplicates_csv_url) {
-                        downloadFile(data.duplicates_csv_url, 'unresolved_duplicates.csv');
+                        await downloadFile(data.duplicates_csv_url, 'unresolved_duplicates.csv');
                     }
+
+                    // Hide loading and show success notification
+                    loadingNotification.classList.remove('show');
+                    successNotification.classList.add('show');
+
+                    // Hide success notification after 5 seconds
+                    setTimeout(() => {
+                        successNotification.classList.remove('show');
+                    }, 5000);
                 } else {
                     console.error('Failed to upload files');
+                    alert('Failed to process files. Please try again.');
                 }
             } catch (error) {
                 console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                // Re-enable the upload button
+                uploadButton.disabled = false;
+                // Hide loading notification if it's still showing
+                loadingNotification.classList.remove('show');
             }
         }
 
         function downloadFile(url, filename) {
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            return new Promise((resolve, reject) => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                // Small delay to ensure download starts before resolving
+                setTimeout(resolve, 500);
+            });
         }
 
         function updateFileName(input) {
@@ -107,7 +153,7 @@
             const buttonSpan = input.nextElementSibling;
             const buttonText = buttonSpan.querySelector('.button-text');
             const fileNameSpan = buttonSpan.querySelector('.file-name');
-            
+
             if (fileName) {
                 buttonText.style.display = 'none';
                 fileNameSpan.textContent = fileName;
@@ -120,4 +166,5 @@
         }
     </script>
 </body>
+
 </html>
