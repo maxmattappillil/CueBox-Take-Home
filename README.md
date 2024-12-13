@@ -64,6 +64,16 @@ To run the project, follow these steps:
 
 The processed files will be downloaded to the root directory of the project in the folder named "output".
 
+## Testing
+
+To run the tests for this project, you need to set the `PYTHONPATH` to the root of your project. This ensures that Python can correctly locate and import the modules within the project. You can run all the tests using the following command:
+
+```bash
+PYTHONPATH=. pytest
+```
+
+This command will execute all the test files in your project, ensuring that the module imports work correctly by using the current directory as the root for module imports.
+
 ## Use of AI Tools
 
 In the development of this project, AI tools were utilized to enhance productivity and efficiency:
