@@ -12,18 +12,6 @@ async def upload_files(
     donations: UploadFile = File(...),
     emails: UploadFile = File(...)
 ):
-    # # Save uploaded files to disk
-    # constituents_path = f"temp/{constituents.filename}"
-    # donations_path = f"temp/{donations.filename}"
-    # emails_path = f"temp/{emails.filename}"
-
-    # with open(constituents_path, "wb") as f:
-    #     f.write(await constituents.read())
-    # with open(donations_path, "wb") as f:
-    #     f.write(await donations.read())
-    # with open(emails_path, "wb") as f:
-    #     f.write(await emails.read())
-
     # Process the CSV files
     output_constituents_df, output_tags_df, duplicates_df = process_csv_files(constituents.file, donations.file, emails.file)
 
@@ -77,5 +65,5 @@ TAGS_CSV = os.path.join(OUTPUT_DIR, "output_tags.csv")
 DUPLICATES_CSV = os.path.join(OUTPUT_DIR, "unresolved_duplicates.csv")
 
 @router.get("/", response_class=HTMLResponse)
-async def root(request: Request):
+async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})

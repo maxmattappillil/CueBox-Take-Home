@@ -3,27 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Upload</title>
+    <title>Theater Data Platform</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500&display=swap">
 </head>
 <body>
-    <div class="container">
-        <h1>Upload CSV Files</h1>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="constituents">Constituents CSV:</label>
-                <input type="file" id="constituents" name="constituents" accept=".csv" required>
+    <div class="stage">
+        <div class="curtain">
+            <div class="container">
+                <h1>Transform Your Theater Data</h1>
+                <p class="subtitle">Seamlessly upload your data and let us set the stage for success</p>
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-upload-container">
+                        <div class="form-group">
+                            <label for="constituents">
+                                <span class="label-text">Constituents CSV</span>
+                            </label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="constituents" name="constituents" accept=".csv" required 
+                                       onchange="updateFileName(this)">
+                                <span class="file-input-button" onclick="document.getElementById('constituents').click()">
+                                    <span class="button-text">Choose File</span>
+                                    <span class="file-name"></span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="donations">
+                                <span class="label-text">Donations CSV</span>
+                            </label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="donations" name="donations" accept=".csv" required
+                                       onchange="updateFileName(this)">
+                                <span class="file-input-button" onclick="document.getElementById('donations').click()">
+                                    <span class="button-text">Choose File</span>
+                                    <span class="file-name"></span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="emails">
+                                <span class="label-text">Emails CSV</span>
+                            </label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="emails" name="emails" accept=".csv" required
+                                       onchange="updateFileName(this)">
+                                <span class="file-input-button" onclick="document.getElementById('emails').click()">
+                                    <span class="button-text">Choose File</span>
+                                    <span class="file-name"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" onclick="uploadFiles()" class="upload-button">
+                        Transform Data
+                        <span class="button-shine"></span>
+                    </button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="donations">Donations CSV:</label>
-                <input type="file" id="donations" name="donations" accept=".csv" required>
-            </div>
-            <div class="form-group">
-                <label for="emails">Emails CSV:</label>
-                <input type="file" id="emails" name="emails" accept=".csv" required>
-            </div>
-            <button type="button" onclick="uploadFiles()">Upload</button>
-        </form>
+        </div>
     </div>
     <script>
         async function uploadFiles() {
@@ -58,6 +100,23 @@
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+        }
+
+        function updateFileName(input) {
+            const fileName = input.files[0]?.name || '';
+            const buttonSpan = input.nextElementSibling;
+            const buttonText = buttonSpan.querySelector('.button-text');
+            const fileNameSpan = buttonSpan.querySelector('.file-name');
+            
+            if (fileName) {
+                buttonText.style.display = 'none';
+                fileNameSpan.textContent = fileName;
+                fileNameSpan.style.display = 'block';
+            } else {
+                buttonText.style.display = 'block';
+                fileNameSpan.textContent = '';
+                fileNameSpan.style.display = 'none';
+            }
         }
     </script>
 </body>
